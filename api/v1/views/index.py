@@ -1,33 +1,25 @@
 #!/usr/bin/python3
-"""index.py to connect to API"""
-from api.v1.views import app_views
-from flask import Flask, Blueprint, jsonify
+"""This module implement a rule that returns the status of the application"""
+from flask import jsonify
 from models import storage
+from api.v1.views import app_views
 
 
-hbnbText = {
-    "amenities": "Amenity",
-    "cities": "City",
-    "places": "Place",
-    "reviews": "Review",
-    "states": "State",
-    "users": "User"
-}
-
-
-@app_views.route('/status', strict_slashes=False)
-def hbnbStatus():
-    """hbnbStatus"""
+@app_views.route("/status", strict_slashes=False)
+def status():
+    """View function that return a json message"""
     return jsonify({"status": "OK"})
 
 
-@app_views.route('/stats', strict_slashes=False)
-def hbnbStats():
-    """hbnbStats"""
-    return_dict = {}
-    for key, value in hbnbText.items():
-        return_dict[key] = storage.count(value)
-    return jsonify(return_dict)
-
-if __name__ == "__main__":
-    pass
+@app_views.route("/stats", strict_slashes=False)
+def stats():
+    """function that retrieves the number of each object by type"""
+    object_count = {
+        "amenities": storage.count("Amenity"),
+        "cities": storage.count("City"),
+        "places": storage.count("Place"),
+        "reviews": storage.count("Review"),
+        "states": storage.count("State"),
+        "users": storage.count("User"),
+    }
+    return jsonify(object_count)
